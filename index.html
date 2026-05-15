@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Slop Generator - Hermes Edition</title>
+    <title>Simple Slop Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117,11 +117,11 @@
         <div class="flex items-center gap-6">
             <!-- Decorative Theme Toggle -->
             <div id="themeToggle"
-                class="w-14 h-6 rounded-full border border-hermes-border relative flex items-center px-1.5 cursor-pointer hover:border-hermes-text transition-colors">
+                class="w-14 h-6 rounded-full border border--border relative flex items-center px-1.5 cursor-pointer hover:border--text transition-colors">
                 <div class="flex justify-between w-full opacity-50">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="text-hermes-border">
+                        class="text--border">
                         <circle cx="12" cy="12" r="5" />
                         <line x1="12" y1="1" x2="12" y2="3" />
                         <line x1="12" y1="21" x2="12" y2="23" />
@@ -134,19 +134,19 @@
                     </svg>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="text-hermes-border">
+                        class="text--border">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </div>
                 <!-- Default is dark mode, so knob is on the right -->
                 <div id="toggleKnob"
-                    class="absolute left-1 w-4 h-4 rounded-full bg-hermes-text transition-transform duration-300 translate-x-[32px]">
+                    class="absolute left-1 w-4 h-4 rounded-full bg--text transition-transform duration-300 translate-x-[32px]">
                 </div>
             </div>
             <!-- Hamburger Menu -->
             <svg id="burgerBtn" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                class="text-hermes-text cursor-pointer hover:opacity-80 transition-opacity">
+                class="text--text cursor-pointer hover:opacity-80 transition-opacity">
                 <line x1="4" x2="20" y1="12" y2="12" />
                 <line x1="4" x2="20" y1="6" y2="6" />
                 <line x1="4" x2="20" y1="18" y2="18" />
@@ -156,12 +156,12 @@
 
     <!-- Hero Section -->
     <div class="text-center mt-16 mb-16 px-4">
-        <div class="text-xs tracking-[0.25em] uppercase mb-8 text-hermes-text/70 font-mono transition-colors">Workflow •
+        <div class="text-xs tracking-[0.25em] uppercase mb-8 text--text/70 font-mono transition-colors">Workflow •
             Automation • Penguins Help</div>
         <h1 class="text-4xl md:text-5xl font-serif font-bold tracking-wide uppercase leading-tight">
             I DID IT FOR THE PENGUINS,<br>NOT BECAUSE I WAS LAZY.
         </h1>
-        <p class="mt-8 max-w-4xl mx-auto text-lg italic text-hermes-text/80 leading-relaxed transition-colors">
+        <p class="mt-8 max-w-4xl mx-auto text-lg italic text--text/80 leading-relaxed transition-colors">
             My brother said typing the same thing twice is a moral failure, wasting AI tokens is a climate crime, and
             the penguins are suffering. I do not know if that is true, or just Luca being dramatic.
             So anyway, here’s my tiny machine. I have no idea how much this helps, but emotionally, I am on the
@@ -178,11 +178,11 @@
             <div class="flex flex-col">
                 <div class="flex justify-between items-end mb-3">
                     <label for="subject" class="font-serif tracking-widest uppercase text-lg">1. Subjects</label>
-                    <span class="font-mono text-[10px] text-hermes-border tracking-widest transition-colors">COMMA
+                    <span class="font-mono text-[10px] text--border tracking-widest transition-colors">COMMA
                         SEPARATED</span>
                 </div>
                 <textarea id="subject"
-                    class="w-full h-[130px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    class="w-full h-[130px] bg--inputBg text--inputText border border--border focus:border--text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
                     placeholder="e.g. rhea, luca"></textarea>
             </div>
 
@@ -191,7 +191,7 @@
                     <label for="template" class="font-serif tracking-widest uppercase text-lg">2. Template</label>
                 </div>
                 <textarea id="template"
-                    class="w-full h-[130px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    class="w-full h-[130px] bg--inputBg text--inputText border border--border focus:border--text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
                     placeholder="e.g. playing guitar, stylized 3D"></textarea>
             </div>
 
@@ -200,7 +200,7 @@
                     <label for="separator" class="font-serif tracking-widest uppercase text-lg">3. Separator</label>
                 </div>
                 <textarea id="separator"
-                    class="w-full h-[60px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    class="w-full h-[60px] bg--inputBg text--inputText border border--border focus:border--text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
                     placeholder="e.g. , lalu Enter"></textarea>
             </div>
 
@@ -212,11 +212,11 @@
                 <h2 class="font-serif tracking-widest uppercase text-lg">4. Hard Poetry</h2>
                 <div class="flex gap-6">
                     <button onclick="downloadText()"
-                        class="font-mono text-xs tracking-widest text-hermes-text/70 hover:text-hermes-text transition-colors focus:outline-none uppercase">
+                        class="font-mono text-xs tracking-widest text--text/70 hover:text--text transition-colors focus:outline-none uppercase">
                         Download
                     </button>
                     <button onclick="copyToClipboard(event)"
-                        class="font-mono text-xs tracking-widest text-hermes-text/70 hover:text-hermes-text transition-colors focus:outline-none uppercase"
+                        class="font-mono text-xs tracking-widest text--text/70 hover:text--text transition-colors focus:outline-none uppercase"
                         id="copyBtn">
                         Copy
                     </button>
