@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Slop Generator - Hermes Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hermes: {
+                            bg: 'var(--bg-color)',
+                            text: 'var(--text-color)',
+                            border: 'var(--border-color)',
+                            inputBg: 'var(--input-bg)',
+                            inputText: 'var(--input-text)',
+                            outputBg: 'var(--output-bg)',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        body: ['Lora', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-color: #0B1310;
+            --text-color: #EADDCD;
+            --border-color: #2C3834;
+            --input-bg: transparent;
+            --input-text: #EADDCD;
+            --output-bg: #0f1a16;
+            --gradient-1: rgba(20, 35, 30, 0.4);
+            --gradient-2: rgba(20, 35, 30, 0.4);
+            --selection-bg: #EADDCD;
+            --selection-text: #0B1310;
+            --scrollbar-thumb: #2C3834;
+            --scrollbar-thumb-hover: #4A5B55;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F7FB;
+            --text-color: #0044FF;
+            --border-color: #B0C4DE;
+            --input-bg: transparent;
+            --input-text: #0044FF;
+            --output-bg: rgba(255, 255, 255, 0.6);
+            --gradient-1: rgba(0, 68, 255, 0.04);
+            --gradient-2: rgba(0, 68, 255, 0.04);
+            --selection-bg: #0044FF;
+            --selection-text: #F4F7FB;
+            --scrollbar-thumb: #A3B8E0;
+            --scrollbar-thumb-hover: #0044FF;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            background-image:
+                radial-gradient(circle at 15% 50%, var(--gradient-1), transparent 25%),
+                radial-gradient(circle at 85% 30%, var(--gradient-2), transparent 25%);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        textarea,
+        #output,
+        header,
+        div {
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Minimalist scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        ::selection {
+            background: var(--selection-bg);
+            color: var(--selection-text);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-body">
+
+    <!-- Top Navigation -->
+    <header class="w-full flex justify-between items-center px-8 py-6 transition-colors duration-300">
+        <div class="font-serif font-bold text-2xl leading-none tracking-wider">
+            SIMPLE<br>SLOP
+        </div>
+        <div class="flex items-center gap-6">
+            <!-- Decorative Theme Toggle -->
+            <div id="themeToggle"
+                class="w-14 h-6 rounded-full border border-hermes-border relative flex items-center px-1.5 cursor-pointer hover:border-hermes-text transition-colors">
+                <div class="flex justify-between w-full opacity-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-hermes-border">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-hermes-border">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </div>
+                <!-- Default is dark mode, so knob is on the right -->
+                <div id="toggleKnob"
+                    class="absolute left-1 w-4 h-4 rounded-full bg-hermes-text transition-transform duration-300 translate-x-[32px]">
+                </div>
+            </div>
+            <!-- Hamburger Menu -->
+            <svg id="burgerBtn" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                class="text-hermes-text cursor-pointer hover:opacity-80 transition-opacity">
+                <line x1="4" x2="20" y1="12" y2="12" />
+                <line x1="4" x2="20" y1="6" y2="6" />
+                <line x1="4" x2="20" y1="18" y2="18" />
+            </svg>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="text-center mt-16 mb-16 px-4">
+        <div class="text-xs tracking-[0.25em] uppercase mb-8 text-hermes-text/70 font-mono transition-colors">Workflow •
+            Automation • Penguins Help</div>
+        <h1 class="text-4xl md:text-5xl font-serif font-bold tracking-wide uppercase leading-tight">
+            I DID IT FOR THE PENGUINS,<br>NOT BECAUSE I WAS LAZY.
+        </h1>
+        <p class="mt-8 max-w-4xl mx-auto text-lg italic text-hermes-text/80 leading-relaxed transition-colors">
+            My brother said typing the same thing twice is a moral failure, wasting AI tokens is a climate crime, and
+            the penguins are suffering. I do not know if that is true, or just Luca being dramatic.
+            So anyway, here’s my tiny machine. I have no idea how much this helps, but emotionally, I am on the
+            penguins’ side.
+        </p>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="w-full max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-10 gap-8 px-8 pb-8 items-stretch">
+
+        <!-- Left Panel: Inputs (3/10) -->
+        <div class="lg:col-span-3 flex flex-col gap-5">
+
+            <div class="flex flex-col">
+                <div class="flex justify-between items-end mb-3">
+                    <label for="subject" class="font-serif tracking-widest uppercase text-lg">1. Subjects</label>
+                    <span class="font-mono text-[10px] text-hermes-border tracking-widest transition-colors">COMMA
+                        SEPARATED</span>
+                </div>
+                <textarea id="subject"
+                    class="w-full h-[130px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    placeholder="e.g. rhea, luca"></textarea>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="flex justify-between items-end mb-3">
+                    <label for="template" class="font-serif tracking-widest uppercase text-lg">2. Template</label>
+                </div>
+                <textarea id="template"
+                    class="w-full h-[130px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    placeholder="e.g. playing guitar, stylized 3D"></textarea>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="flex justify-between items-end mb-3">
+                    <label for="separator" class="font-serif tracking-widest uppercase text-lg">3. Separator</label>
+                </div>
+                <textarea id="separator"
+                    class="w-full h-[60px] bg-hermes-inputBg text-hermes-inputText border border-hermes-border focus:border-hermes-text transition-colors outline-none p-4 font-mono text-sm resize-none shadow-inner"
+                    placeholder="e.g. , lalu Enter"></textarea>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Output (7/10) -->
+        <div class="lg:col-span-7 flex flex-col">
+            <div class="flex justify-between items-end mb-3 transition-colors">
+                <h2 class="font-serif tracking-widest uppercase text-lg">4. Hard Poetry</h2>
+                <div class="flex gap-6">
+                    <button onclick="downloadText()"
+                        class="font-mono text-xs tracking-widest text-hermes-text/70 hover:text-hermes-text transition-colors focus:outline-none uppercase">
+                        Download
+                    </button>
+                    <button onclick="copyToClipboard(event)"
+                        class="font-mono text-xs tracking-widest text-hermes-text/70 hover:text-hermes-text transition-colors focus:outline-none uppercase"
+                        id="copyBtn">
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Container -->
+            <div id="output"
+                class="w-full flex-1 bg-hermes-outputBg text-hermes-inputText border border-hermes-border p-6 font-mono text-sm leading-loose whitespace-pre-wrap overflow-y-auto focus:outline-none selection:bg-hermes-text selection:text-hermes-bg shadow-inner transition-colors">
+                Waiting for input...</div>
+        </div>
+
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="relative max-w-5xl w-full mx-4 flex flex-col items-center">
+            <button id="closeModalBtn" class="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <img src="hardimages.png" alt="Hard Images" class="w-full h-auto max-h-[85vh] object-contain rounded-lg shadow-2xl">
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const subject = document.getElementById('subject');
+        const template = document.getElementById('template');
+        const separator = document.getElementById('separator');
+        const output = document.getElementById('output');
+
+        const themeToggle = document.getElementById('themeToggle');
+        const toggleKnob = document.getElementById('toggleKnob');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                toggleKnob.classList.remove('translate-x-[32px]');
+            } else {
+                toggleKnob.classList.add('translate-x-[32px]');
+            }
+        });
+
+        function updatePrompt() {
+            const subVal = subject.value.trim();
+            const tempVal = template.value.trim();
+            // Default separator ke enter (newline) jika kosong
+            const sepVal = separator.value !== "" ? separator.value : '\n';
+
+            if (subVal) {
+                const subjects = subVal.split(',');
+                const combinedPrompts = subjects
+                    .filter(s => s.trim() !== "")
+                    .map(s => `${s.trim()} ${tempVal}`.trim());
+
+                output.textContent = combinedPrompts.join(sepVal);
+                output.style.opacity = '1';
+            } else {
+                output.textContent = "Waiting for input...";
+                output.style.opacity = '0.5';
+            }
+        }
+
+        function copyToClipboard(event) {
+            const text = output.textContent;
+            if (text && text !== "Waiting for input...") {
+                navigator.clipboard.writeText(text);
+
+                const btn = event.currentTarget;
+                const originalText = btn.innerText;
+
+                btn.innerText = "COPIED!";
+                btn.style.fontWeight = 'bold';
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.fontWeight = 'normal';
+                }, 1500);
+            }
+        }
+
+        function downloadText() {
+            const text = output.textContent;
+            if (text && text !== "Waiting for input...") {
+                let rawSubject = subject.value.trim();
+                let filename = rawSubject
+                    ? rawSubject.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').substring(0, 30)
+                    : 'slop_prompts';
+
+                if (filename.endsWith('_')) filename = filename.slice(0, -1);
+
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        subject.addEventListener('input', updatePrompt);
+        template.addEventListener('input', updatePrompt);
+        separator.addEventListener('input', updatePrompt);
+
+        // Modal Logic
+        const burgerBtn = document.getElementById('burgerBtn');
+        const imageModal = document.getElementById('imageModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        function openModal() {
+            imageModal.classList.remove('opacity-0', 'pointer-events-none');
+            imageModal.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeModal() {
+            imageModal.classList.add('opacity-0', 'pointer-events-none');
+            imageModal.classList.remove('opacity-100', 'pointer-events-auto');
+        }
+
+        burgerBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        // Close if clicking outside the image
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                closeModal();
+            }
+        });
+
+        updatePrompt();
+    </script>
+</body>
+
+</html>
